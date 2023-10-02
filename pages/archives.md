@@ -2,5 +2,5 @@
 layout: archives
 title: Archives
 permalink: /archives/
-# icon: "fa-tags"
+feature-img: "assets/img/pexels/computer.jpeg"
 ---
