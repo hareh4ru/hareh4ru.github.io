@@ -2,6 +2,7 @@
 published: true
 layout: post
 title: Sample Post
+category: Sample
 tags:
   - Sample
 excerpt_separator: <!--more-->
