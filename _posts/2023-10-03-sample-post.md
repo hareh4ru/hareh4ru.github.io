@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 layout: post
 title: Sample Post
 tags:
@@ -7,15 +7,13 @@ tags:
   - Test
 excerpt_separator: <!--more-->
 ---
-## A New Post
-Welcome to the new world:)
+Welcome to the new world :)
 <!--more-->
-> Code Block Test
+## A New Post
+> Code Block Test <
+Quote is working well.
 
 ```python
 print("Hello")
 ```
-
-```c
-printf("Hello\n");
-```
+Code blocks too.
