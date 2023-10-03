@@ -2,12 +2,13 @@
 layout: page
 title: About
 permalink: /about/
-feature-img: "assets/img/pexels/travel.jpeg"
+feature-img: assets/img/pexels/travel.jpeg
+published: true
 ---
 
 ## Profile
 ---
-- Daegu Science High School 30th (2017.3-2020.2)
-- Korea University, Deperment of Cyber Defense (2020.3-)
-- CTF Player at CyKor (2022.3-)
-- KITRI BoB 11th, Vulnerability Analysis Track - Best 10 (2022.7-2023.3) 
+- Daegu Science High School (Mar 2017 - Feb 2020)
+- Korea University, Deperment of Cyber Defense (Mar 2020 -)
+- CTF Player at CyKor (Mar 2022 - )
+- KITRI BoB 11th, Vulnerability Analysis Track - Best 10 (Jul 2022 - Mar 2023)
