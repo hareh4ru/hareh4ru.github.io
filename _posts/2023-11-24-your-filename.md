@@ -25,7 +25,7 @@ int main()
 }
 ```
 FSOP를 사용하기 위해서 FILE 구조체가 IO 함수에서 어떻게 사용되는지 파악해야 한다.
-fopen에서 반환되는 fp가 가리키는 FILE 구조체는 다음과 같이 생겼다. 
+fopen에서 반환되어 fp가 가리키는 FILE 구조체는 다음과 같이 생겼다. 
 
 
 ```c
@@ -166,8 +166,9 @@ libc_hidden_def (_IO_puts)
 #define _IO_XSPUTN(FP, DATA, N) JUMP2 (__xsputn, FP, DATA, N)
 #define JUMP2(FUNC, THIS, X1, X2) (_IO_JUMPS_FUNC(THIS)->FUNC) (THIS, X1, X2)
 
-#define _IO_JUMPS_FUNC(THIS) (IO_validate_vtable((THIS)))
+# define _IO_JUMPS_FUNC(THIS) (IO_validate_vtable (_IO_JUMPS_FILE_plus (THIS)))
 ```
+
 `_IO_sputn` -> `_IO_XSPUTN` -> `JUMP2(__xsputn, ...)` -> `_IO_JUMPS_FUNC(THIS)->__xsputn` 인 것을 확인할 수 있다.
 이때 `_IO_JUMPS_FUNC` = `IO_validate_vtable`에서 vtable에 대한 검증이 존재하는 것을 확인할 수 있다.
 
@@ -190,7 +191,7 @@ IO_validate_vtable (const struct _IO_jump_t *vtable)
   return vtable;
 }
 ```
-검증은 넘겨준 vtable이 libc의 vtable section 안에 존재해야 한다는 것이다. 이 검증이 없었을 때에는 vtable을 fake table로 바꿔주기만 하면 RCE가 가능했다. 검증에 성공할 경우 인자로 받았던 vtable 포인터를 그대로 반환한다.
+넘겨준 vtable이 libc의 vtable section 안에 존재해는지 검증한다. 검증에 성공할 경우 인자로 받았던 vtable 포인터를 그대로 반환하여 멤버 함수를 참조한다. 이 검증이 없었을 때에는 vtable을 fake table로 바꿔주기만 하면 RCE가 가능했다. 
 
 ```c
 // https://elixir.bootlin.com/glibc/glibc-2.35/source/libio/libioP.h#L293
@@ -222,7 +223,7 @@ struct _IO_jump_t
 ```
 `_IO_jump_t` vtable은 위와 같이 생겼다. 앞서 실행 흐름을 다시 살펴보면 `_IO_sputn` -> `_IO_XSPUTN` -> `JUMP2(__xsputn, ...)` -> `_IO_JUMPS_FUNC(THIS)->__xsputn`이었다.
 
-puts를 실행할 때 정리해보면 `_IO_2_1_stdout_.vtable->__xsputn`이 호출되는 것이다. 검증을 우회하고 임의 함수를 실행하기 위해 
+puts를 실행할 때를 기준으로 정리하면 `_IO_2_1_stdout_.vtable->__xsputn`이 호출되는 것이다. FSOP는 검증을 우회하고 임의 함수를 실행하기 위해  
 
 1. vtable의 주소가 libc의 vtable section 내에 존재하면 된다.
 2. `_wide_vtable`을 참조할 때는 검증이 존재하지 않음
@@ -245,7 +246,7 @@ _IO_wdoallocbuf (FILE *fp)
 }
 libc_hidden_def (_IO_wdoallocbuf)
 ```
-`_wide_vtable`을 참조하는 루틴 중 하나인 `_IO_WDOALLOCATE`을 살펴보면
+`_wide_vtable`을 참조하는 내부 루틴 중 하나인 `_IO_WDOALLOCATE`을 살펴보면
 
 ```c
 // https://elixir.bootlin.com/glibc/glibc-2.35/source/libio/libioP.h#L223
@@ -268,11 +269,13 @@ libc_hidden_def (_IO_wdoallocbuf)
 
 ```
 
-`#define _IO_JUMPS_FUNC(THIS) (IO_validate_vtable((THIS)))`
-앞서 살펴본 `io_vtable`의 jump에서 검증을 진행했던 것과 달리 바로 포인터로 캐스팅해주는 것을 확인할 수 있다.
+`#define _IO_JUMPS_FUNC(THIS) (IO_validate_vtable((THIS)))` : 
+앞서 살펴본 `_IO_FILE_JUMPS`에서 검증을 진행했던 것과 달리 바로 포인터로 캐스팅해주는 것을 확인할 수 있다.
 
 이를 이용해서 FSOP는
-1. `_IO_2_1_stdout_.vtable`이 `_wide_vtable`을 가리키도록 한다. (이 포스트에서 다루는 익스의 경우 `_IO_wfile_overflow`를 가리킨다.)  
+1. `_IO_2_1_stdout_.vtable`이 `_wide_vtable`을 가리키도록 한다. 
+(구체적으로 이 포스트에서 다루는 FSOP path에서는 정확히 `_IO_2_1_stdout_.vtable->__xsputn == _IO_wfile_jumps->_IO_file_overflow`가 되도록 한다.)
+
 2. 
 
 
