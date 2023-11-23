@@ -1,14 +1,14 @@
 ---
 published: true
+layout: post
+category: pwn
+tags:
+  - 'pwn, FSOP'
+excerpt_separator: <!--more-->
 ---
-## Introduction
-
----
-
 glibc 2.34부터 malloc, free hook이 없어지면서 libc leak + AAW가 가능할 때에도 RIP Control이 조금 더 어려워졌다. 
-
-libc leak + AAW가 가능함을 가정했을 때 glibc 2.35에서도 안정적으로 `system("sh")`가 가능한 FSOP에 대해 알아보자.
-
+glibc 2.35에서도 안정적으로 `system("sh")`가 가능한 FSOP에 대해 알아보자.
+<!--more-->
 
 ## `_IO_FILE` struct
 
