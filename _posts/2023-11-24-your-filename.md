@@ -276,8 +276,64 @@ libc_hidden_def (_IO_wdoallocbuf)
 1. `_IO_2_1_stdout_.vtable`이 `_wide_vtable`을 가리키도록 한다. 
 (구체적으로 이 포스트에서 다루는 FSOP path에서는 정확히 `_IO_2_1_stdout_.vtable->__xsputn == _IO_wfile_jumps->_IO_file_overflow`가 되도록 한다.)
 
-2. 
 
+2. `_IO_wfile_jumps->_IO_file_overflow`에서 호출하는 내부 루틴이 `_wide_vtable`을 참조하게 될텐데 
+
+```
+// https://elixir.bootlin.com/glibc/glibc-2.35/source/libio/libioP.h#L101
+#define _IO_WIDE_JUMPS(THIS) \
+  _IO_CAST_FIELD_ACCESS ((THIS), struct _IO_FILE, _wide_data)->_wide_vtable
+```
+이때 내부 루틴에서 참조하는 `_wide_vtable`은 `_IO_2_1_stdout_._wide_data->_wide_vtable`에 해당하며,
+`_IO_2_1_stdout_._wide_data`를 자유롭게 덮을 수 있는 상황을 가정하고 있다.
+
+따라서 `wide_vtable`을 fake table로 가리킬 수 있다.
+
+
+## Code Flow
+---
+이제 FSOP가 의도하는 코드 흐름을 살펴보자. 
+
+앞서 미리 적은 것처럼
+1. `_IO_puts`에서 `_IO_sputn`을 호출하는데, 이때 `_IO_2_1_stdout`의 vtable이 `_wide_vtable`을 가리키도록 덮어 `_IO_wfile_overflow`을 호출한다. `_IO_wfile_overflow`은 차례로 `_IO_wdoallocbuf`, `_IO_WDOALLOCATE (fp)`을 호출하게 된다.
+
+`_IO_WDOALLOCATE (fp)`에서 `_wide_vtable`에 대한 검증이 없기 때문에 fake table을 사용, `system()`을 호출한다.
+
+정리하면 다음과 같다.
+`_IO_puts` → (`_IO_sputn` , vtable corrupted) → `_IO_wfile_overflow` → `_IO_wdoallocbuf` → `_IO_WDOALLOCATE (fp)`
+
+코드 흐름에서 constraints가 몇 가지 존재하며, 코드 아래에 정리해두었다.
+
+### puts
+---
+```c
+// https://elixir.bootlin.com/glibc/glibc-2.35/source/libio/ioputs.c#L31
+int
+_IO_puts (const char *str)
+{
+  int result = EOF;
+  size_t len = strlen (str);
+  _IO_acquire_lock (stdout);
+
+  if ((_IO_vtable_offset (stdout) != 0
+       || _IO_fwide (stdout, -1) == -1)
+      && _IO_sputn (stdout, str, len) == len
+      && _IO_putc_unlocked ('\n', stdout) != EOF)
+    result = MIN (INT_MAX, len + 1);
+
+  _IO_release_lock (stdout);
+  return result;
+}
+
+weak_alias (_IO_puts, puts)
+libc_hidden_def (_IO_puts)
+
+#define _IO_sputn(__fp, __s, __n) _IO_XSPUTN (__fp, __s, __n)
+#define _IO_XSPUTN(FP, DATA, N) JUMP2 (__xsputn, FP, DATA, N)
+#define JUMP2(FUNC, THIS, X1, X2) (_IO_JUMPS_FUNC(THIS)->FUNC) (THIS, X1, X2)
+
+#define _IO_JUMPS_FUNC(THIS) (IO_validate_vtable((THIS)))
+```
 
 
 
