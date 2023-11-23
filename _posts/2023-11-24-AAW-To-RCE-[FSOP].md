@@ -3,7 +3,7 @@ published: true
 layout: post
 category: pwn
 tags:
-  - 'pwn, FSOP'
+  - pwn
 excerpt_separator: <!--more-->
 ---
 glibc 2.34부터 malloc, free hook이 없어지면서 libc leak + AAW가 가능할 때에도 RIP Control이 조금 더 어려워졌다. 
