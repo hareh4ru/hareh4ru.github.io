@@ -1,10 +1,10 @@
 ---
 published: true
 layout: post
-title: "AAW to RCE - [FSOP]"
+title: AAW to RCE - FSOP
 category: pwn
 tags:
-  - [FSOP]
+  - - FSOP
 excerpt_separator: <!--more-->
 ---
 glibc 2.34부터 malloc, free hook이 없어지면서 libc leak + AAW가 가능할 때에도 RIP Control이 조금 더 어려워졌다. 
@@ -482,7 +482,7 @@ gef➤  ptype /o _IO_wfile_jumps
 - `__xsputn` :  56 (0x38)
 
 ⇒ `fp->vtable = libc['_IO_wfile_jumps'] - 0x20`
-으로 설정하면 `vtable->__xsputn`이 정확히 `_IO_wfile_jumps - 0x20 + 0x56 == _IO_wfile_jumps.__overflow` ⇒ `_IO_wfile_overflow` 을 가리킴.
+으로 설정하면 `vtable->__xsputn`이 정확히 `_IO_wfile_jumps - 0x20 + 0x38 == _IO_wfile_jumps.__overflow` ⇒ `_IO_wfile_overflow` 을 가리킴.
 <br/>
 <br/>
 
