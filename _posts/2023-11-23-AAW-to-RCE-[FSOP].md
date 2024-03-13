@@ -1,7 +1,7 @@
 ---
 published: true
 layout: post
-title: AAW to RCE - FSOP
+title: FSOP in glibc 2.35
 category: pwn
 tags:
   - - FSOP
