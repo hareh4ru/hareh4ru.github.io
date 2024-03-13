@@ -7,7 +7,7 @@ tags:
   - - FSOP
 excerpt_separator: <!--more-->
 ---
-glibc >= 2.35에서도 안정적으로 `system("sh")`가 가능한 FSOP에 대해 알아보자.
+glibc 2.35에서도 안정적으로 `system("sh")`가 가능한 FSOP에 대해 알아보자.
 <!--more-->
 <br/>
 <br/>
