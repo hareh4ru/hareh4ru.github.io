@@ -651,7 +651,6 @@ FSOP = FSOP_struct(flags = u64(b"\x01\x01;sh;\x00\x00"), \
         )
 ```
 이를 코드로 정리하면 위와 같다.
-`FSOP_struct()`의 경우 @qwerty님이 화햇 예선 디스코드에 올리신 걸 그대로 썼다 ^.^
 <br/>
 <br/>
 
