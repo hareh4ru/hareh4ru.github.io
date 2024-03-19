@@ -6,8 +6,10 @@ tags: HTB2024
 excerpt_separator: <!--more-->
 title: 'Hack The Box CTF 2024 Write-up (Pwn) [EN]'
 ---
-Last week I played Hack The Box CTF 2024 with @vubar, the student team of VU. 
+Last week I played Hack The Box CTF 2024 with @vubar, the student team of VU.
+
 <!--more-->
+
 Playing CTF offline with a foreign team was one of my dreams during the exchange program. Thanks to @vubar for accepting this stranger!
 
 We solved every challenges except 1 web, and ranked 13th. I solved pwn challenges with @meowmeowxw and @verdic and it was a really nice experience to learn from. 
