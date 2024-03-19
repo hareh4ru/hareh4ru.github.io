@@ -4,11 +4,11 @@ layout: post
 category: pwn
 tags: HTB2024
 excerpt_separator: <!--more-->
-title: Hack The Box CTF 2024 Write-up (Pwn)
+title: 'Hack The Box CTF 2024 Write-up (Pwn) [EN]'
 ---
-This week I played Hack The Box CTF 2024 with @vubar, the student team of VU. Playing CTF offline with a foreign team was one of my dreams during the exchange program. Thanks to @vubar for accepting this stranger:)
+This week I played Hack The Box CTF 2024 with @vubar, the student team of VU. Playing CTF offline with a foreign team was one of my dreams during the exchange program. Thanks to @vubar for accepting this stranger!
 
-We solved every challenges except two web, and ranked 14th. I solved pwn challenges with @meowmeowxw and @verdic and it was a really nice experience to learn from. 
+We solved every challenges except 1 web, and ranked 13th. I solved pwn challenges with @meowmeowxw and @verdic and it was a really nice experience to learn from. 
 
 Below is a brief writeup of challenges we solved.
 
@@ -102,7 +102,7 @@ Every gadget we need exists in the vdso section. However eax control was found m
 
 * We tried `execve("/bin/sh", 0, 0)` but it showed `applet not found error` since the default shell was set to busybox. 
 * Therefore we tried `execve("/bin/sh", ["sh"], 0)` and we got a shell. But it didn't have a root permission.
-* So we tried `setuid(0) ; execve("/bin/sh", ["sh"], 0)`, but we still failed to get a root shell.
+* So we tried `setuid(0) ; execve("/bin/sh", ["sh"], 0)`, but we still failed to get a root shell. (Official write-up says that this would work, so maybe we made some mistake.)
 * Finally we tried `setuid(0) ; execve("/bin/cat", ["/bin/cat", "/root/flag.txt"], 0)` and it succeeded.
 
 We also tried `execve("/bin/aa", 0, 0)`, where `aa` is our custom, static binary which opens and prints `/root/flag.txt`. But there wasn't a write permission to the file system so it didn't work. 
@@ -199,7 +199,7 @@ So after the exploit, we can not directly `system("/bin/sh")` to get a shell, bu
 
 The connections increase the file descriptors of the flag and socket we use in the orw payload (since it doesn't close one after connection), so they are 5 and 6 respectively.
 
-Therefore the 3rd payload should look like below.
+Therefore the 3rd payload should look like below.(in a pseudo-c code)
 
 ```c
 int socket_fd = 5;
