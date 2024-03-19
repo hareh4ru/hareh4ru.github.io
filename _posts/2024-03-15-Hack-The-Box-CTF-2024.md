@@ -1,3 +1,11 @@
+---
+published: true
+layout: post
+category: pwn
+tags: HTB2024
+excerpt_separator: <!--more-->
+title: Hack The Box CTF 2024 Write-up (Pwn)
+---
 This week I played Hack The Box CTF 2024 with @vubar, the student team of VU. Playing CTF offline with a foreign team was one of my dreams during the exchange program. Thanks to @vubar for accepting this stranger:)
 
 We solved every challenges except two web, and ranked 14th. I solved pwn challenges with @meowmeowxw and @verdic and it was a really nice experience to learn from. 
@@ -265,4 +273,4 @@ In conclusion
 2. Craft two fake chunks. One on the stack, the other on the heap. It can be crafted by `create_taunt()` at the same time since it writes user input on the stack first and then copy it to heap.
 3. Remove taunts[0]. It will free both fake chunks we made.
 4. Allocate with size of the stack fake chunk. Fill it with ROP payload. 
-5. With 1-2 minute bruteforce, we can get the flag.  
+5. With 1-2 minute bruteforce, we can get the flag.
