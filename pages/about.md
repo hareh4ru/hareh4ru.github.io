@@ -6,9 +6,9 @@ feature-img: assets/img/pexels/travel.jpeg
 published: true
 ---
 ## About me
-Security researcher
+- Security researcher
 
-CTF player [@CyKor](https://x.com/cykorku)
+- CTF player [@CyKor](https://x.com/cykorku)
 
 <br/>
 ## Education
