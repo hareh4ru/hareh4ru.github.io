@@ -10,7 +10,7 @@ published: true
 
 - CTF player [@CyKor](https://x.com/cykorku)
 
-
+<br/>
 ## Education
 * **2025.2 - Now**
 
@@ -27,7 +27,7 @@ KITRI BoB 11th, Vulnerability Analysis Track - **Top 10**
 
 **B.S.**, Korea University, Deperment of Cyber Defense 
 
-
+<br/>
 ## Awards
 - 2024 2nd, LG Uplus Security Hackathon Qualifier (PhysicalLab)
 - 2024 Finalist, LakeCTF (CyKor)
