@@ -30,7 +30,7 @@ published: true
 - 2024 Finalist, LakeCTF (CyKor)
 - 2024 Finalist, DEFCON 32 (Cold Fusion)
 
-
+<br/>
 - 2023 1st, HSpace Partner's League (CyKor)
 - 2023 2th, zer0pts CTF (CyKor)
 - 2023 Finalist, CodeGate CTF (roKyC)
