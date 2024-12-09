@@ -8,7 +8,7 @@ published: true
 ## About me
 - Security Researcher
 
-- CTF player [@CyKor](https://x.com/cykorku)
+- CTF Player [@CyKor](https://x.com/cykorku)
 
 <br/>
 ## Education
