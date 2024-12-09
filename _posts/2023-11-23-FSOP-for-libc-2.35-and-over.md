@@ -65,6 +65,8 @@ type = struct _IO_FILE {
 `ptype struct _IO_FILE` shows how file struct looks like.
 There are several member variables, and we will only discuss about the necessary ones later.
 
+<br></br>
+
 ## Following the control flow of `puts`
 ---
 
@@ -127,6 +129,8 @@ FSOP techniques used after glibc 2.35 abuses `_wide_vtable`, which calls its mem
 
 From below, We'll examine exactly how it works.
 
+<br></br>
+
 ## Missing validation in `_wide_vtable`
 ---
 ```c
@@ -176,6 +180,9 @@ Abusing this absence of validation,
 
 Then calling `puts` will further call `_IO_wfile_jumps->_IO_file_overflow` instead of `__xsputn`. And `_IO_wfile_jumps->_IO_file_overflow` will call functions from our fake vtable, which leads to arbitrary code execution (even with limited RDI control).
 
+<br></br>
+
+
 ## Code Flow
 ---
 Now let's follow the exact code flow to reach arbitrary code execution.
@@ -185,6 +192,8 @@ It can be briefly described as below.
 `_IO_puts` → (`_IO_sputn` , corrupted vtable) → `_IO_wfile_overflow` → `_IO_wdoallocbuf` → `_IO_WDOALLOCATE (fp)`
 
 As there are a few constraints to follow this code path, I brought the constraints with relevant code.  
+
+<br></br>
 
 ### puts
 ```c
@@ -239,6 +248,9 @@ _IO_wfile_overflow (FILE *f, wint_t wch)
 2. `f->_flags & _IO_CURRENTLY_PUTTING == 0`
 3. `f->_wide_data->_IO_write_base == 0`
 
+<br></br>
+
+
 ### _IO_wdoallocbuf
 ```c
 void
@@ -280,8 +292,13 @@ By satisfying these constraints, calling `puts` will call `system("sh")`;
 
 Now let's organized constrains for each member variable of stdout.
 
+<br></br>
+
+
 ### fp->vtable
 To satisfy `vtable->__xsputn == _IO_wfile_jumps.__overflow`, `fp->vtable` should be set to libc['_IO_wfile_jumps'] - 0x20`
+
+<br></br>
 
 ### fp->_flags
 ```c
@@ -295,6 +312,9 @@ _flags & _IO_UNBUFFERED == 0
 ```
 At the last part of the code flow, `_IO_WDOALLOCATE (fp)` is called. Since `_flags` is the first member variable of `_IO_FILE`, setting it to `b"\x01\x01;sh;\x00\x00"` will make fp(stdout) point to "sh".
 
+<br></br>
+
+
 ### fp->_wide_data
 ```c
 _wide_data->_IO_buf_base == 0
@@ -304,6 +324,9 @@ _wide_data->_wide_vtable_->__doallocate == libc_system
 This part is a little tricky. By setting  `stdout->_wide_data` to `&_IO_2_1_stdout_ - 16`, 
 and `stdout->_unused2[20]` to `p64(libc.symbols['system'])+ b"\x00"*4 + p64(libc.symbols['_IO_2_1_stdout_'] + 196 - 104)` we can make `_wide_data->_wide_vtable_->__doallocate` point to `libc_system`
 `.
+
+<br></br>
+
 
 ## Conclusion
 ---
@@ -356,8 +379,11 @@ FSOP = FSOP_struct(flags = u64(b"\x01\x01;sh;\x00\x00"), \
         )
 ```
 
+<br></br>
+
+
 ## Reference
 ---
-[Deep dive into FSOP](https://niftic.ca/posts/fsop/)
+* [Deep dive into FSOP](https://niftic.ca/posts/fsop/)
 
-[Angry-FSROP](https://blog.kylebot.net/2022/10/22/angry-FSROP/)
+* [Angry-FSROP](https://blog.kylebot.net/2022/10/22/angry-FSROP/)
