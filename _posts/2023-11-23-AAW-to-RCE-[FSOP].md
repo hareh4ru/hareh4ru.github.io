@@ -1,5 +1,5 @@
 ---
-published: true
+published: false
 layout: post
 title: 'FSOP for libc 2.35 and over [KR]'
 category: pwn
