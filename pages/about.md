@@ -10,7 +10,7 @@ published: true
 
 - CTF player [@CyKor](https://x.com/cykorku)
 
-<br/>
+
 ## Education
 * **2025.2 - Now**
 
@@ -24,13 +24,13 @@ published: true
 
 	**B.S.**, Korea University, Deperment of Cyber Defense 
 
-<br/>
+
 ## Awards
 - 2024 2nd, LG Uplus Security Hackathon Qualifier (PhysicalLab)
 - 2024 Finalist, LakeCTF (CyKor)
 - 2024 Finalist, DEFCON 32 (Cold Fusion)
 
-<br/>
+
 - 2023 1st, HSpace Partner's League (CyKor)
 - 2023 2th, zer0pts CTF (CyKor)
 - 2023 Finalist, CodeGate CTF (roKyC)
