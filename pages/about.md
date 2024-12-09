@@ -11,7 +11,6 @@ Security researcher
 CTF player [@CyKor](https://x.com/cykorku)
 
 <br/>
-<br/>
 ## Education
 * **2025.2 - Now**
 
@@ -25,7 +24,6 @@ CTF player [@CyKor](https://x.com/cykorku)
 
 	**B.S.**, Korea University, Deperment of Cyber Defense 
 
-<br/>
 <br/>
 ## Awards
 - 2024 2nd, LG Uplus Security Hackathon Qualifier (PhysicalLab)
