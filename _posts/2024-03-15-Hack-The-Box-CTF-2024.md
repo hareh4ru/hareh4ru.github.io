@@ -6,7 +6,7 @@ tags: HTB2024
 excerpt_separator: <!--more-->
 title: 'Hack The Box CTF 2024 Write-up (Pwn) [EN]'
 ---
-Last week I played Hack The Box CTF 2024 with @vubar, the student team of VU.
+Last week I played Hack The Box CTF 2024 with @vubar, the student team of VU Amsterdam.
 
 <!--more-->
 
