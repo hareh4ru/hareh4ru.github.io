@@ -1,7 +1,7 @@
 ---
 published: true
 layout: post
-title: 'FSOP for libc 2.35 and over'
+title: FSOP for libc 2.35 and over
 category: pwn
 tags:
   - FSOP
@@ -10,6 +10,7 @@ excerpt_separator: <!--more-->
 <!--more-->
 
 ## `_IO_FILE`  struct
+---
 ```c
 #include <stdio.h>
 
@@ -119,7 +120,7 @@ IO_validate_vtable (const struct _IO_jump_t *vtable)
   return vtable;
 }
 ```
-And the `IO_validate_vtable()` checks if the vtable is inside the vtable section of libc. 
+And `IO_validate_vtable()` checks if the vtable is inside the vtable section of libc. 
 
 To summarize, calling `puts()` leads to calling stdout->vtable->__xsputn() with the vtable validation.
 FSOP techniques used after glibc 2.35 abuses `_wide_vtable`, which calls its member functions without validation, and also it's inside the libc vtable section.  
