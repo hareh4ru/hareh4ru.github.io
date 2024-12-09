@@ -4,7 +4,7 @@ layout: post
 category: pwn
 tags: HTB2024
 excerpt_separator: <!--more-->
-title: 'Hack The Box CTF 2024 Write-up (Pwn) [EN]'
+title: Hack The Box CTF 2024 Write-up
 ---
 Last week I played Hack The Box CTF 2024 with @vubar, the student team of VU Amsterdam.
 
