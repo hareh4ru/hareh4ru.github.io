@@ -2,7 +2,7 @@
 layout: post
 category: pwn
 tags:
-  - - FSOP
+  - LakeCTF 2024
 excerpt_separator: <!--more-->
 title: Leakless Code Execution Technique for libc 2.39 and over
 ---
