@@ -22,7 +22,7 @@ Requirements to use the technique is as follows.
 
 1. Heap primitive to allocate and free chunk
 2. Heap primitive to write at chunk at the time of allocation 
-3. Heap vulnerability(BOF, UAF, whatever...) which can be used to overwrite largebin chunk's bk_nextsize to libc relative value, which will further used for largebin attack
+3. Heap vulnerability (BOF, UAF, whatever...) which can be used to overwrite largebin chunk's bk_nextsize to libc relative value, which will further used for largebin attack
     
     * This may look tricky at first glance, but simple heap bof can achieve this, by overlapping unsorted bin and largebin chunk. (details below) 
 
