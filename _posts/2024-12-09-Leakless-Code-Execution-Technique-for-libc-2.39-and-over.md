@@ -13,6 +13,7 @@ Last Sunday, I played LakeCTF with CyKor. We ranked 6th in the academic division
 I grabbed pwn challenges, which were great and also had many points to learn. Especially for fsophammer, the intended writeup suggests a **leakless technique** to achieve arbitrary code execution in the latest libc. 
 
 This post will describe about the details of the technique.
+
 <br/>
 
 
@@ -26,6 +27,7 @@ Requirements to use the technique is as follows.
     * This may look tricky at first glance, but simple heap bof can achieve this, by overlapping unsorted bin and largebin chunk. (details below) 
 
 Requirements can be less or more according to exact heap primitives or conditions, but **these requirements are generally possible**, often provided in CTF challs or real world binaries.
+
 <br/>
 
 ## Exploit Scenario
@@ -38,6 +40,7 @@ Based on these requirements, the exploit scenario of this technique is as follow
 4. Abusing the overwritten `mp_.tcache_bins`, make the allocater use the prepared stdout pointers as tcache entries. Also set the `tcache->counts` for the entry index of stdout pointers
 5. Use the first allocaton to stdout, overwrite `flags_`, and `_IO_write_base` to get libc leak.
 6. Use the second allocation to achieve code execution using `_wide_data` FSOP.
+
 <br/>
 
 ## LakeCTF 2024: fsophammer
@@ -131,6 +134,7 @@ void slam() {
 Slam menu is given to flip one bit from `_IO_2_1_stdout_._IO_buf_end` and within `_IO_2_1_stdout_`. Given that stdin is buffered and therefore its buffer is allocated on heap, flipping a proper bit of `_IO_2_1_stdout_._IO_buf_end` leads to heap bof.
 
 Now let's follow the exploit scenario above with these primitives.
+
 <br/>
 
 ## Exploit
@@ -220,10 +224,12 @@ First allocation to stdout will do the leak.
     alloc(3,(0x2c8+1)*0x10, FSOP)
 ```
 Second allocation will trigger `system("sh")` with the leak.
+
 <br/>
 
 ## Conclusion
 We got a nice technique to achieve code execution without any leak vulnerability. Big shout out to [@skuuk](https://x.com/s_k_u_u_k) for bringing this great technique and the challenge.
+
 <br/>
 
 ## Reference
