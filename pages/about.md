@@ -34,7 +34,7 @@ published: true
 - Finalist, CodeGate CTF (roKyC)
 - Finalist, Midnight Sun CTF (CyKor)
 - 4th, HITCON Final (Program-Fur-Mozzi)
-- 2th, Academic, GlacierCTF (CyKor)
+- 2th, GlacierCTF Academic (CyKor)
 - Special Award, Hacktheon Sejong (CorKy)
 
 ### 2022
