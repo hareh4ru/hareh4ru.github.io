@@ -6,7 +6,7 @@ feature-img: assets/img/pexels/travel.jpeg
 published: true
 ---
 ## About me
-- Security Researcher
+- Security Researcher [@KAIST Hacking Lab](https://kaist-hacking.github.io/)
 
 - CTF Player [@CyKor](https://x.com/cykorku)
 
@@ -15,12 +15,11 @@ published: true
 * **2025.2 - Now**
 
 
-**M.S.**, School of Electrical Engineering [@KAIST Hacking Lab](https://kaist-hacking.github.io/)
-
+**M.S.**, KAIST, School of Electrical Engineering
 * **2022.7 - 2023.3**
 
 
-KITRI BoB 11th, Vulnerability Analysis Track - **Top 10** 
+KITRI BoB 11th, Vulnerability Analysis Track, Top 10 
 
 * **2020.3 - 2025.2**
 
