@@ -1,3 +1,13 @@
+---
+layout: post
+category: pwn
+tags:
+  - - FSOP
+excerpt_separator: <!--more-->
+title: Leakless Code Execution Technique for libc 2.39 and over
+---
+<!--more-->
+
 Last Sunday, I played LakeCTF with CyKor. We ranked 6th in the academic division, succeeded to get to the finals.
 
 I grabbed pwn challenges, which were great and also had many points to learn. Especially for fsophammer, the intended writeup suggests a **leakless technique** to achieve arbitrary code execution in the latest libc. 
