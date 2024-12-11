@@ -13,17 +13,8 @@ published: true
 <br/>
 ## Education
 * **2025.2 - Now**
-
-
 **M.S.**, KAIST, School of Electrical Engineering
-* **2022.7 - 2023.3**
-
-
-KITRI BoB 11th, Vulnerability Analysis Track, Top 10 
-
 * **2020.3 - 2025.2**
-
-
 **B.S.**, Korea University, Deperment of Cyber Defense 
 
 <br/>
@@ -40,3 +31,5 @@ KITRI BoB 11th, Vulnerability Analysis Track, Top 10
 - 2023 4th, HITCON Final (Program-Fur-Mozzi)
 - 2023 2th, Academic, GlacierCTF (CyKor)
 - 2023 Special Award, Hacktheon Sejong (CorKy)
+
+- 2022 Top 10, KITRI BoB 11th, Vulnerability Analysis Track
