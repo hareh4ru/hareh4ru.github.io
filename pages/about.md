@@ -13,8 +13,12 @@ published: true
 <br/>
 ## Education
 * **2025.2 - Now**
+
+
 **M.S.**, KAIST, School of Electrical Engineering
 * **2020.3 - 2025.2**
+
+
 **B.S.**, Korea University, Deperment of Cyber Defense 
 
 <br/>
