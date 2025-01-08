@@ -4,7 +4,7 @@ category: pwn
 tags:
   - LakeCTF 2024
 excerpt_separator: <!--more-->
-title: Leakless Code Execution Technique for libc 2.39 and over
+title: Leakless Code Execution Technique for libc >= 2.39
 ---
 <!--more-->
 
