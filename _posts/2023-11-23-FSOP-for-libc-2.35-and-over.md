@@ -1,7 +1,7 @@
 ---
 published: true
 layout: post
-title: FSOP for libc 2.35 and over
+title: FSOP for libc >= 2.35 
 category: pwn
 tags:
   - FSOP
