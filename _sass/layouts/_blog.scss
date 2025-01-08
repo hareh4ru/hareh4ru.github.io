@@ -93,6 +93,19 @@
         transform: scale(1.1);
       }
     }
+
+    header {
+      h1 {
+        .post-link {
+          color: var(--text);
+          
+          &:hover {
+            text-decoration: none;
+            color: var(--link);
+          }
+        }
+      }
+    }
   }
 
   .excerpt {
