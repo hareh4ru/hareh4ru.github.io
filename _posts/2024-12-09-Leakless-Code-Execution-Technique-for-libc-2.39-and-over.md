@@ -1,8 +1,9 @@
 ---
 layout: post
-category: pwn
+category: Exploit Technique
 tags:
-  - LakeCTF-2024
+  - LakeCTF 2024
+  - Largebin Attack
 excerpt_separator: <!--more-->
 date: 2024-12-09 00:00:00 +0900
 title: Leakless Code Execution Technique for libc >= 2.39

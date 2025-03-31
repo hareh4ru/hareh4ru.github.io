@@ -3,7 +3,7 @@ published: true
 layout: post
 title: FSOP for libc >= 2.35
 date: 2023-11-23 00:00:00 +0900 
-category: pwn
+category: Exploit Technique
 
 
 tags:
