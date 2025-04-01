@@ -1,12 +1,12 @@
 ---
 published: true
 layout: post
-category: CTF Writeup
+category: CTF Write-up
 tags:
 date: 2024-03-15 00:00:00 +0900
 excerpt_separator: <!--more-->
-title: Hack The Box CTF 2024 Write-up
-
+title: Hack The Box CTF 2024 Write-up (pwn)
+description: " "
 ---
 <!--more-->
 
