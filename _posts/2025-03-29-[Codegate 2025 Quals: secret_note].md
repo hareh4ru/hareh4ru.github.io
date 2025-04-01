@@ -5,6 +5,7 @@ tags:
   - Codegate 2025 Quals
 date: 2025-03-30 00:00:00 +0900
 title: Codegate 2025 Quals - Secret Note & Todo List (pwn)
+description: 2-stage FSOP to convert 0x10 bytes AAW to shell
 ---
 
 ## Secret Note
