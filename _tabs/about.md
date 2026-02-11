@@ -14,7 +14,7 @@ order: 4
 
 **B.S.** in Cyber Defense, Korea University 
 
-## Awards
+## CTF
 ### 2025
 - 2025 Finalist, Dreamhack Invitational (Individual)
 
