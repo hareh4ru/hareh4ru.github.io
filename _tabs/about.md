@@ -1,5 +1,5 @@
 ---
-layout: null
+layout: none
 permalink: /about/
 sitemap: false
 ---
