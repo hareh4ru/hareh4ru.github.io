@@ -1,0 +1,16 @@
+---
+layout: default
+---
+<article class="post">
+  <header class="post-header">
+    <a class="back-link" href="{{ '/blog/' | relative_url }}">← Blog</a>
+    <h1>{{ page.title }}</h1>
+    <div class="post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%B %-d, %Y' }}</time>
+      {% if page.category %}<span>{{ page.category }}</span>{% endif %}
+    </div>
+  </header>
+  <div class="prose post-content">
+    {{ content }}
+  </div>
+</article>

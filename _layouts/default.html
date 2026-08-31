@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="{{ site.lang | default: 'en' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{{ page.description | default: site.description | strip_html | escape }}">
+    <link rel="icon" href="{{ '/assets/img/favicons/favicon.svg' | relative_url }}" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ '/assets/css/academic.css' | relative_url }}">
+    <script>
+      (function () {
+        var saved = localStorage.getItem('theme');
+        if (saved) document.documentElement.dataset.theme = saved;
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    {% include site-header.html %}
+    <div class="page-shell">
+      {% include profile-sidebar.html %}
+      <main id="content" class="site-main">
+        {{ content }}
+      </main>
+    </div>
+    {% include site-footer.html %}
+    <script src="{{ '/assets/js/site.js' | relative_url }}"></script>
+  </body>
+</html>

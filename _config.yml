@@ -14,7 +14,7 @@ timezone: Asia/Seoul
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: hareh4ru # the main title
+title: Kyeongmin Kim # the main title
 
 tagline: <a href=https://kaist-hacking.github.io/>@KAIST Hacking Lab</a><br><a href=https://x.com/CyKorKU>@CyKor</a> # it will display as the subtitle
 
@@ -34,8 +34,8 @@ twitter:
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: hareh4ru
-  email: example@domain.com # change to your email address
+  name: Kyeongmin Kim
+  email: newjeans@kaist.ac.kr
   links:
     # The first element serves as the copyright owner's link
     - https://twitter.com/hareh4ru # change to your Twitter homepage
@@ -98,7 +98,7 @@ theme_mode: # [light | dark]
 cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar: /assets/img/avatar.jpg
+avatar: /assets/img/profile.png
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
