@@ -1,0 +1,271 @@
+% Kyeongmin Kim's curriculum vitae
+% Based on the Jake's Resume layout (MIT License)
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,allcolors=blue]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{needspace}
+\usepackage{fontawesome5}
+\usepackage{mathpazo}
+\input{glyphtounicode}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\footskip}{4.1pt}
+
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-0.5in}
+\addtolength{\textheight}{1in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+\pdfgentounicode=1
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+\newcommand{\contactItem}[3]{%
+  \makebox[1.1em][c]{#1}\hspace{3pt}\href{#2}{#3}%
+}
+
+\newcommand{\resumeItem}[1]{
+  \item\small{#1 \vspace{-2pt}}
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \item
+  \begin{tabular*}{\linewidth}[t]{l@{\extracolsep{\fill}}r}
+    \makebox[1em][l]{\footnotesize$\bullet$}\textbf{#1} & #2 \\
+    \hspace{1em}\textit{\small #3} & \textit{\small #4} \\
+  \end{tabular*}\vspace{-5pt}
+}
+
+\newcommand{\resumeResearchSubheading}[5]{
+  \item
+  \begin{tabular*}{\linewidth}[t]{l@{\extracolsep{\fill}}r}
+    \makebox[1em][l]{\footnotesize$\bullet$}\textbf{#1} & #2 \\
+    \hspace{1em}\textit{\small #3} & \textit{\small #4} \\
+    \multicolumn{2}{l}{\hspace{1em}\small #5} \\
+  \end{tabular*}\vspace{-5pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+  \item
+  \begin{tabular*}{\linewidth}{l@{\extracolsep{\fill}}r}
+    \makebox[1em][l]{\footnotesize$\bullet$}\small #1 & #2 \\
+  \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumePublication}[4]{
+  \item
+  \begin{tabularx}{\linewidth}{@{}X@{}}
+    \makebox[1em][l]{\footnotesize$\bullet$}\textbf{#1} \\
+    \small \hspace{1em}#2 \\
+    \small \hspace{1em}#3 \\
+    \small \hspace{1em}#4
+  \end{tabularx}
+  \vspace{-5pt}
+}
+
+\newcommand{\resumeAward}[3]{
+  \item
+  \begin{tabularx}{\linewidth}[t]{@{}Xr@{}}
+    \makebox[1em][l]{\footnotesize$\bullet$}\textbf{#1} & #2 \\
+    \multicolumn{2}{@{}p{\linewidth}@{}}{\hspace{1em}\small #3}
+  \end{tabularx}\vspace{-5pt}
+}
+
+\newcommand{\resumeAwardCategory}[1]{
+  \item[]\textbf{\large #1}\vspace{-2pt}
+}
+
+\newcommand{\resumeCompetition}[2]{
+  \item
+  \begin{tabularx}{\linewidth}[t]{@{}Xr@{}}
+    \makebox[1em][l]{\footnotesize$\bullet$}#1 & #2
+  \end{tabularx}\vspace{-2pt}
+}
+
+\newcommand{\resumeTalk}[3]{
+  \item
+  \begin{tabularx}{\linewidth}[t]{@{}X@{}}
+    \makebox[1em][l]{\footnotesize$\bullet$}\textbf{#1} \\
+    \hspace{1em}\small #2 \\
+    \hspace{1em}\small #3
+  \end{tabularx}\vspace{-5pt}
+}
+
+\newcommand{\resumeTeaching}[3]{
+  \item
+  \begin{tabularx}{\linewidth}[t]{@{}Xr@{}}
+    \makebox[1em][l]{\footnotesize$\bullet$}\textbf{#1} & #2 \\
+    \multicolumn{2}{@{}l@{}}{\hspace{1em}\small Teaching Assistant at KAIST (Instructor: #3)}
+  \end{tabularx}\vspace{-5pt}
+}
+
+\newcommand{\resumeVulnerability}[2]{
+  \item
+  \makebox[1em][l]{\footnotesize$\bullet$}\textbf{#1}: #2
+  \vspace{-2pt}
+}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\scriptsize$\circ$}}$}
+\newcommand{\resumeSubHeadingListStart}{
+  \begin{itemize}[
+    leftmargin=0pt,
+    label={},
+    itemsep=4pt,
+    parsep=0pt,
+    topsep=0pt,
+    partopsep=0pt
+  ]
+}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{
+  \begin{itemize}[leftmargin=1.15em,label=$\vcenter{\hbox{\scriptsize$\circ$}}$]
+}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+\begin{document}
+
+% Header: edit the placeholder text and URLs below.
+\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}l@{}}
+  \begin{tabular}[t]{@{}l@{}}
+    \textbf{\huge Kyeongmin Kim} \\[3pt]
+    \small\rmfamily \contactItem{\faEnvelope}{mailto:newjeans@kaist.ac.kr}{newjeans@kaist.ac.kr} \\
+    \small\rmfamily \contactItem{\faGlobe}{https://hareh4ru.github.io/}{https://hareh4ru.github.io}
+  \end{tabular}
+  &
+  \begin{tabular}[t]{@{}r@{}}
+    \small\rmfamily \contactItem{\faLinkedin}{https://www.linkedin.com/in/kyeongmin-kim-88499b290/}{LinkedIn} \\
+    \small\rmfamily \contactItem{\faGithub}{https://github.com/hareh4ru/}{GitHub} \\
+    \small\rmfamily \contactItem{\faOrcid}{https://orcid.org/0009-0009-8667-7680}{ORCID}
+  \end{tabular}
+\end{tabular*}
+\vspace{2pt}
+
+\section{Education}
+\resumeSubHeadingListStart
+  \resumeSubheading
+    {Korea Advanced Institute of Science and Technology (KAIST)}{Feb. 2025 -- Present}
+    {M.S. in Electrical Engineering}{Daejeon, Korea}
+  \resumeSubheading
+    {Kellogg College, University of Oxford}{Aug. 2025 -- Feb. 2026}
+    {Global Cybersecurity Talent Development Program sponsored by IITP}{Oxford, UK}
+  \resumeSubheading
+    {Korea University}{Mar. 2020 -- Feb. 2025}
+    {B.E. in Cyber Defense}{Seoul, Korea}
+  \resumeSubheading
+    {Vrije Universiteit Amsterdam (VU Amsterdam)}{Feb. 2024 -- Aug. 2024}
+    {Exchange Program}{Amsterdam, Netherlands}
+\resumeSubHeadingListEnd
+
+\section{Experience}
+\resumeSubHeadingListStart
+  \resumeResearchSubheading
+    {Graduate Student Researcher}{Feb. 2025 -- Present}
+    {Hacking Lab, KAIST}{Daejeon, Korea}
+    {Advised by: Prof. Insu Yun}
+
+  \resumeSubheading
+    {KITRI Best of the Best (BoB), 11th Cohort}{Jul. 2022 -- Mar. 2023}
+    {Vulnerability Analysis Track --- Best 10}{Seoul, Korea}
+
+  \resumeResearchSubheading
+    {Undergraduate Student Researcher}{Jan. 2022 -- Mar. 2022}
+    {Computer Systems Security Lab, Korea University}{Seoul, Korea}
+    {Advised by: Prof. Youngjoo Shin}
+\resumeSubHeadingListEnd
+
+\section{Publications}
+\resumeSubHeadingListStart
+\resumePublication
+  {MTEscape: Bypassing Asynchronous Kernel MTE via Conventional Memory Corruption Vulnerabilities}
+  {\textbf{Kyeongmin Kim}, Insu Yun}
+  {Proceedings of the 33rd ACM Conference on Computer and Communications Security (CCS 2026, to appear)}
+  {The Hague, The Netherlands, November 2026}
+\resumeSubHeadingListEnd
+
+\section{Conference Talks}
+\resumeSubHeadingListStart
+  \resumeTalk
+    {MTEscape: Bypassing ARM's Asynchronous MTE with General Memory Corruption Vulnerabilities}
+    {Hexacon 2026 (to be presented)}
+    {Paris, France, October 2026}
+\resumeSubHeadingListEnd
+
+\section{Honors and Awards}
+\resumeSubHeadingListStart
+  \resumeAwardCategory{Professional Recognition}
+  \resumeAward
+    {Microsoft Most Valuable Researcher}{Aug. 2026}
+    {Recognized as a top Microsoft security researcher; ranked 5th on the Windows leaderboard (Q2 2026).}
+  \resumeAward
+    {Meritorious Service Award, Korean Association of Cybersecurity Studies (KACS)}{Nov. 2025}
+    {Recognized for proactively detecting and responding to malware distribution activity.}
+  \resumeAward
+    {Excellence Award, 2025 Chungcheong Regional Cyber Threat Scenario Competition}{Sep. 2025}
+    {Received the Korea Gas Technology Corporation President's Award in the gas sector.}
+  \Needspace{18\baselineskip}
+  \resumeAwardCategory{Hacking Competitions}
+  \resumeCompetition{2nd Place, DEF CON 34 CTF (Team: 0x4b52)}{Aug. 2026}
+  \resumeCompetition{Finalist, Midnight Sun CTF (Team: HackingForMakguli)}{Jun. 2026}
+  \resumeCompetition{Finalist, DreamHack Invitational}{Apr. 2025}
+  \resumeCompetition{Finalist, LakeCTF (Team: CyKor)}{Dec. 2024}
+  \resumeCompetition{Finalist, HITCON CTF (Team: Cold Fusion)}{Nov. 2024}
+  \resumeCompetition{Finalist, DEF CON 32 CTF (Team: Cold Fusion)}{Aug. 2024}
+  \resumeCompetition{2nd Place, GlacierCTF --- Academic Division (Team: CyKor)}{Nov. 2023}
+  \resumeCompetition{4th Place, HITCON CTF Final (Team: Program-Fur-Mozzi)}{Nov. 2023}
+  \resumeCompetition{Finalist, CODEGATE CTF --- University Division (Team: roKyC)}{Aug. 2023}
+  \resumeCompetition{Finalist, Midnight Sun CTF (Team: CyKor)}{Aug. 2023}
+  \resumeCompetition{3rd Place, Samsung Security Tech Forum CTF (Team: Cy + Kr)}{Aug. 2023}
+  \resumeCompetition{2nd Place, zer0pts CTF (Team: CyKor)}{Jul. 2023}
+  \resumeCompetition{Special Award, HACKTHEON Sejong (Team: CorKy)}{May 2023}
+\resumeSubHeadingListEnd
+
+\section{Reported Vulnerabilities (Chosen)}
+\resumeSubHeadingListStart
+  \resumeVulnerability{CVE-2026-50327 (and 2 others)}{Remote Code Execution in Windows Media}
+  \resumeVulnerability{CVE-2026-50655}{Remote Code Execution in Windows Media Foundation}
+  \resumeVulnerability{CVE-2026-44812}{Remote Code Execution in Windows Graphics Component}
+  \resumeVulnerability{CVE-2026-42992 (and 5 others)}{Remote Code Execution in Windows Remote Desktop Client}
+  \resumeVulnerability{CVE-2026-50497}{Information Disclosure in Microsoft Remote Desktop Protocol}
+  \resumeVulnerability{CVE-2026-58535 (and 6 others)}{Information Disclosure in Windows Remote Desktop Client}
+  \resumeVulnerability{CVE-2024-22211}{FreeRDP Heap Buffer Overflow}
+  \resumeVulnerability{KVE-2023-5003}{Alyac Antivirus Local Privilege Escalation}
+  \resumeVulnerability{KVE-2022-0980}{V3 Antivirus Local Privilege Escalation}
+\resumeSubHeadingListEnd
+
+\section{Teaching Experience}
+\resumeSubHeadingListStart
+  \resumeTeaching
+    {Introduction to Modern Software Development (EE217)}{Fall 2026}
+    {John Kim}
+  \resumeTeaching
+    {Introduction to Modern Software Development (EE217)}{Spring 2026}
+    {Seulki Lee}
+  \resumeTeaching
+    {Introduction to Electronics Design Lab (EE305)}{Spring 2026}
+    {Jung-Woo Choi, Ian Oakley, Bongjin Kim}
+  \resumeTeaching
+    {Programming Structures for Electrical Engineering (EE209)}{Spring 2025}
+    {Jaemin Yoo}
+\resumeSubHeadingListEnd
+
+\end{document}

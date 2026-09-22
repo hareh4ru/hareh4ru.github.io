@@ -1,5 +1,15 @@
 # Chirpy Starter
 
+The website and LaTeX CV are maintained together in this repository. The CV
+source is in `cv-src/`; each Pages deployment rebuilds it and publishes the
+result at `/assets/files/cv.pdf`.
+
+To build the CV locally:
+
+```bash
+make -C cv-src
+```
+
 [![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy)][gem]&nbsp;
 [![GitHub license](https://img.shields.io/github/license/cotes2020/chirpy-starter.svg?color=blue)][mit]
 

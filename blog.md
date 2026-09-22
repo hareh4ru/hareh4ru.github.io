@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Blog
-subtitle: Mostly old notes on binary exploitation, glibc internals, and CTFs.
+subtitle: My old notes on binary exploitation, glibc internals, and CTFs.
 permalink: /blog/
 nav: blog
 ---

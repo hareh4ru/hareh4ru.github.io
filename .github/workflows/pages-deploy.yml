@@ -35,6 +35,24 @@ jobs:
           # If using the 'assets' git submodule from Chirpy Starter, uncomment above
           # (See: https://github.com/cotes2020/chirpy-starter/tree/main/assets)
 
+      - name: Build CV
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: cv.tex
+          working_directory: cv-src
+
+      - name: Install CV and update its date
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s cv-src/cv.pdf
+          cp cv-src/cv.pdf assets/files/cv.pdf
+
+          updated_iso=$(git log -1 --format=%cs -- cv-src/cv.tex)
+          updated_display=$(date -d "$updated_iso" '+%b. %-d, %Y')
+          printf 'last_updated: "%s"\nlast_updated_iso: "%s"\n' \
+            "$updated_display" "$updated_iso" > _data/cv.yml
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
