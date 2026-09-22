@@ -175,8 +175,7 @@ a:hover { color: var(--accent-hover); }
 .featured-publication { padding: 13px 0 2px; }
 .featured-publication p { margin: 2px 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
 .featured-publication .publication-title { color: var(--text); font-size: 16px; font-weight: 620; }
-.home-cv-link { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 42px 0 0; font-size: 14px; }
-.home-cv-link .cv-updated { color: var(--muted); font-size: 12px; }
+.home-cv-link { margin: 42px 0 0; font-size: 14px; }
 
 .vulnerability-list { list-style: none; margin: 11px 0 0; padding: 0; }
 .vulnerability-list li { display: grid; grid-template-columns: 205px 1fr; gap: 18px; padding: 7px 0; }
