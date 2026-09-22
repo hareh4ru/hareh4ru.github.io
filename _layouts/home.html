@@ -102,4 +102,7 @@ layout: default
   <button class="expand-button" type="button" aria-expanded="false" aria-controls="vulnerability-list" data-count="9">Show all 9</button>
 </section>
 
-<p class="home-cv-link"><a href="{{ '/cv/' | relative_url }}">View full curriculum vitae →</a></p>
+<p class="home-cv-link">
+  <a href="{{ '/cv/' | relative_url }}">View full curriculum vitae →</a>
+  <span class="cv-updated">Last updated <time datetime="{{ site.data.cv.last_updated_iso }}">{{ site.data.cv.last_updated }}</time></span>
+</p>
