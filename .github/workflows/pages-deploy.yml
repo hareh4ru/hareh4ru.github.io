@@ -46,7 +46,7 @@ jobs:
         run: |
           set -euo pipefail
           test -s cv-src/cv.pdf
-          cp cv-src/cv.pdf assets/files/cv.pdf
+          cp cv-src/cv.pdf assets/files/cv_kyeongminkim.pdf
 
           updated_iso=$(git log -1 --format=%cs -- cv-src/cv.tex)
           updated_display=$(date -d "$updated_iso" '+%b. %-d, %Y')

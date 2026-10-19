@@ -2,7 +2,7 @@
 
 The website and LaTeX CV are maintained together in this repository. The CV
 source is in `cv-src/`; each Pages deployment rebuilds it and publishes the
-result at `/assets/files/cv.pdf`.
+result at `/assets/files/cv_kyeongminkim.pdf`, accessible via `/cv`.
 
 To build the CV locally:
 
