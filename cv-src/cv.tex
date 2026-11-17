@@ -17,6 +17,8 @@
 \usepackage{mathpazo}
 \input{glyphtounicode}
 
+\definecolor{AwardBlue}{RGB}{0,51,204}
+
 \pagestyle{fancy}
 \fancyhf{}
 \fancyfoot{}
@@ -72,13 +74,14 @@
   \end{tabular*}\vspace{-7pt}
 }
 
-\newcommand{\resumePublication}[4]{
+\newcommand{\resumePublication}[5]{
   \item
   \begin{tabularx}{\linewidth}{@{}X@{}}
     \makebox[1em][l]{\footnotesize$\bullet$}\textbf{#1} \\
     \small \hspace{1em}#2 \\
     \small \hspace{1em}#3 \\
-    \small \hspace{1em}#4
+    \small \hspace{1em}#4 \\
+    \small \hspace{1em}\textcolor{AwardBlue}{\textbf{#5}}
   \end{tabularx}
   \vspace{-5pt}
 }
@@ -200,8 +203,9 @@
 \resumePublication
   {MTEscape: Bypassing Asynchronous Kernel MTE via Conventional Memory Corruption Vulnerabilities}
   {\textbf{Kyeongmin Kim}, Insu Yun}
-  {Proceedings of the 33rd ACM Conference on Computer and Communications Security (CCS 2026, to appear)}
+  {Proceedings of the 33rd ACM Conference on Computer and Communications Security (CCS 2026)}
   {The Hague, The Netherlands, November 2026}
+  {Distinguished Paper Award (23 out of 482)}
 \resumeSubHeadingListEnd
 
 \section{Conference Talks}
@@ -209,7 +213,7 @@
   \resumeTalk
     {1 Man, 1 Month, 45 Bugs: Scaling AI Bug Hunting to \$100,000+ in Bounties}
     {\textbf{Kyeongmin Kim}, Insu Yun}
-    {POC 2026 (to be presented)}
+    {POC 2026}
     {Seoul, Korea, November 2026}
   \resumeTalk
     {MTEscape: Bypassing ARM's Asynchronous MTE with General Memory Corruption Vulnerabilities}
@@ -222,6 +226,9 @@
 \resumeSubHeadingListStart
   \resumeAwardCategory{Professional Recognition}
   \resumeAward
+    {Distinguished Paper Award, ACM CCS 2026}{Nov. 2026}
+    {(23 out of 482)}
+  \resumeAward
     {Microsoft Most Valuable Researcher}{Aug. 2026}
     {Recognized as a top Microsoft security researcher; ranked 5th on the Windows leaderboard (Q2 2026).}
   \resumeAward
@@ -233,7 +240,7 @@
   \Needspace{18\baselineskip}
   \resumeAwardCategory{Hacking Competitions}
   \resumeCompetition{Pwn2Own Ireland 2026\newline\hspace*{1em}{\small Successfully exploited Samsung Galaxy S26 (Remote), Home Assistant Green.}}{Oct. 2026}
-  \resumeCompetition{3rd Place, Cyber Conflict Exercise (CCE) 2026 --- General Division (Team: Stegosaurus)}{Sep. 2026}
+  \resumeCompetition{3rd Place, Cyber Conflict Exercise (CCE) --- General Division (Team: Stegosaurus)}{Sep. 2026}
   \resumeCompetition{2nd Place, DEF CON 34 CTF (Team: 0x4b52)}{Aug. 2026}
   \resumeCompetition{Finalist, Midnight Sun CTF (Team: HackingForMakguli)}{Jun. 2026}
   \resumeCompetition{Finalist, DreamHack Invitational}{Apr. 2025}
