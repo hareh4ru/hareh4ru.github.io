@@ -1,5 +1,6 @@
 :root {
   --accent: #0065c0;
+  --award-accent: #0033cc;
   --accent-hover: #e07818;
   --text: #171a1f;
   --muted: #4f5863;
@@ -13,6 +14,7 @@
 
 :root[data-theme="dark"] {
   --accent: #76adf1;
+  --award-accent: #8daeff;
   --accent-hover: #f1a356;
   --text: #e7e8ea;
   --muted: #c2c6cc;
@@ -175,6 +177,7 @@ a:hover { color: var(--accent-hover); }
 .featured-publication { padding: 13px 0 2px; }
 .featured-publication p { margin: 2px 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
 .featured-publication .publication-title { color: var(--text); font-size: 16px; font-weight: 620; }
+.featured-publication .publication-award { color: var(--award-accent); }
 .home-cv-link { margin: 42px 0 0; font-size: 14px; }
 
 .vulnerability-list { list-style: none; margin: 11px 0 0; padding: 0; }
