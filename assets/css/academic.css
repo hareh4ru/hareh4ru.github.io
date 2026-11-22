@@ -177,6 +177,7 @@ a:hover { color: var(--accent-hover); }
 .featured-publication { padding: 13px 0 2px; }
 .featured-publication p { margin: 2px 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
 .featured-publication .publication-title { color: var(--text); font-size: 16px; font-weight: 620; }
+.publication-links { white-space: nowrap; }
 .featured-publication .publication-award { color: var(--award-accent); }
 .home-cv-link { margin: 42px 0 0; font-size: 14px; }
 
